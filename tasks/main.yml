@@ -1,0 +1,15 @@
+---
+- pip:
+    name: boto
+
+- name: Download config files
+  gc_storage:
+    bucket: "{{ owner }}-{{ service }}"
+    object: "{{ item }}"
+    dest: /app/
+    mode: get
+  with_items: "{{ config_files }}"
+
+- name: Docker-compose
+  docker_compose:
+    project_src: /app
