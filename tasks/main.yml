@@ -4,12 +4,12 @@
 
 - name: Download config files
   gc_storage:
-    bucket: "{{ owner }}-{{ service }}"
+    bucket: "{{ owner }}-{{ service }}-config"
     object: "{{ item }}"
     dest: /app/
     mode: get
   with_items: "{{ config_files }}"
 
 - name: Docker-compose
-  docker_compose:
+  docker_service:
     project_src: /app
