@@ -4,12 +4,7 @@
     name: boto
 
 - name: Download config files
-  gc_storage:
-    bucket: "{{ owner }}-{{ service }}-config"
-    object: "{{ item }}"
-    dest: /app/
-    mode: get
-  with_items: "{{ config_files }}"
+  shell: "gsutil rsync -r gs://{{ docker_service_owner }}-{{ docker_service_name }}-config {{ docker_service_app_directory }}"
 
 - name: Docker-compose
   docker_service:

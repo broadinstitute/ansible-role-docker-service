@@ -1,4 +1,3 @@
 ---
-owner: Null
-service: Null
-config_files: Null
+docker_service_owner: Null
+docker_service_name: Null
