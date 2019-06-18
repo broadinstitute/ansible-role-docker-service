@@ -1,5 +1,6 @@
 ---
 - pip:
+    executable: /usr/local/bin/pip
     name: boto
 
 - name: Download config files
