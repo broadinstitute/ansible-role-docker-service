@@ -12,7 +12,7 @@
     mode: '0755'
 
 - name: Download config files
-  shell: "gsutil rsync -r gs://{{ docker_service_owner }}-{{ docker_service_name }}-config {{ docker_service_app_directory }}"
+  shell: gsutil rsync -r gs://{{ docker_service_owner }}-{{ docker_service_name }}-config {{ docker_service_app_directory }}
 
 - name: Docker-compose
   docker_service:
