@@ -1,4 +1,8 @@
 ---
+- pip:
+    executable: /usr/local/bin/pip
+    name: docker-compose
+
 - name: Create app directory if it does not exist
   file:
     path: "{{ docker_service_app_directory }}"
