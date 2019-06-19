@@ -14,6 +14,12 @@
   shell: gsutil rsync -r gs://{{ docker_service_owner }}-{{ docker_service_name }}-config {{ docker_service_app_directory }}
   become_user: "{{ docker_service_user }}"
 
+- name: Ensure docker deamon is running
+  service:
+    name: docker
+    state: started
+  become_user: "{{ docker_service_user }}"
+
 - name: Configure gcloud Docker auth
   shell: gcloud auth configure-docker
   become_user: "{{ docker_service_user }}"
