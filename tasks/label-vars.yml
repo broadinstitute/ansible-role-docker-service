@@ -1,5 +1,5 @@
 ---
-- name: Get label vars
+- name: Get label info
   shell: gcloud compute instances list --filter="name:$(hostname)" --format 'json(labels)' | jq .[].labels
   register: label_cmd
 
