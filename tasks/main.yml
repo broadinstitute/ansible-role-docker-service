@@ -1,13 +1,4 @@
 ---
-- name: install pip for Python 2
-  include: get-pip.yml
-
-- pip:
-    name:
-      - docker
-      - pyyaml
-      - docker-compose
-
 - name: Create app directory if it does not exist
   file:
     path: "{{ docker_service_app_directory }}"
@@ -17,6 +8,8 @@
 - name: Download config files
   shell: gsutil rsync -r gs://{{ docker_service_owner }}-{{ docker_service_name }}-config {{ docker_service_app_directory }}
 
+- name: Configure gcloud Docker auth
+  shell: gcloud auth configure-docker
+
 - name: Docker-compose
-  docker_service:
-    project_src: /app
+  shell: docker-compose -f /app/docker-compose.yaml
