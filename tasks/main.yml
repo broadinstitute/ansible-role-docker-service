@@ -4,12 +4,16 @@
     path: "{{ docker_service_app_directory }}"
     state: directory
     mode: '0755'
+  become_user: "{{ docker_service_user }}"
 
 - name: Download config files
   shell: gsutil rsync -r gs://{{ docker_service_owner }}-{{ docker_service_name }}-config {{ docker_service_app_directory }}
+  become_user: "{{ docker_service_user }}"
 
 - name: Configure gcloud Docker auth
   shell: gcloud auth configure-docker
+  become_user: "{{ docker_service_user }}"
 
 - name: Docker-compose
-  shell: docker-compose -f /app/docker-compose.yaml
+  shell: docker-compose -f /app/docker-compose.yaml up
+  become_user: "{{ docker_service_user }}"
