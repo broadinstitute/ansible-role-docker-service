@@ -1,7 +1,6 @@
 ---
-- easy_install:
-    name: pip
-    state: latest
+- name: install pip for Python 2
+  include: get-pip.yml
 
 - pip:
     name:
