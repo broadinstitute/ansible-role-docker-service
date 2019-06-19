@@ -1,4 +1,7 @@
 ---
+- name: Expose instance labels as instance_labels var
+  include: label-vars.yml
+
 - pip:
     executable: /usr/local/bin/pip
     name: docker-compose
@@ -11,7 +14,7 @@
   become_user: "{{ docker_service_user }}"
 
 - name: Download config files
-  shell: gsutil rsync -r gs://{{ docker_service_owner }}-{{ docker_service_name }}-config {{ docker_service_app_directory }}
+  shell: gsutil rsync -r gs://{{ instance_labels.owner }}-{{ instance_labels.app }}-config {{ docker_service_app_directory }}
   become_user: "{{ docker_service_user }}"
 
 - name: Ensure docker deamon is running
@@ -24,5 +27,5 @@
   become_user: "{{ docker_service_user }}"
 
 - name: Docker-compose
-  shell: /usr/local/bin/docker-compose -f /app/docker-compose.yaml up
+  shell: /usr/local/bin/docker-compose -d -f /app/docker-compose.yaml up
   become_user: "{{ docker_service_user }}"

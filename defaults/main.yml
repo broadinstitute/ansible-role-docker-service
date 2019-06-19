@@ -1,7 +1,5 @@
 ---
 docker_service_app_directory: /app
-docker_service_owner: gmalkov
-docker_service_name: thurloe
 docker_service_user: jenkins
 
 pip_version: "9.0.*"
