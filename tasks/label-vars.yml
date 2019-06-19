@@ -1,8 +1,8 @@
 ---
 - name: Get label vars
   shell: gcloud compute instances list --filter="name:$(hostname)" --format 'json(labels)' | jq .[].labels
-  register: instance_labels
+  register: label_cmd
 
 - name: Set labels as facts
   set_fact:
-    instance_labels: "{{ label_string.stdout | from_json }}"
+    instance_labels: "{{ label_cmd.stdout | from_json }}"
