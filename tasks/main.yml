@@ -18,7 +18,6 @@
   service:
     name: docker
     state: started
-  become_user: "{{ docker_service_user }}"
 
 - name: Configure gcloud Docker auth
   shell: gcloud auth configure-docker
