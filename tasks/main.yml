@@ -14,7 +14,7 @@
   become_user: "{{ docker_service_user }}"
 
 - name: Download config files
-  shell: gsutil rsync -r gs://{{ instance_labels.owner }}-{{ instance_labels.app }}-config {{ docker_service_app_directory }}
+  shell: gsutil rsync -r gs://{{ instance_labels.owner }}-{{ instance_labels.app }}-config/{{ ansible_hostname }}/configs {{ docker_service_app_directory }}
   become_user: "{{ docker_service_user }}"
 
 - name: Ensure docker deamon is running
