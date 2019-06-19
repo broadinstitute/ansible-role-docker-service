@@ -1,6 +1,9 @@
 ---
+- easy_install:
+    name: pip
+    state: latest
+
 - pip:
-    executable: /usr/local/bin/pip
     name:
       - docker
       - pyyaml
