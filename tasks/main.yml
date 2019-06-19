@@ -27,5 +27,5 @@
   become_user: "{{ docker_service_user }}"
 
 - name: Docker-compose
-  shell: /usr/local/bin/docker-compose -d -f /app/docker-compose.yaml up
+  shell: /usr/local/bin/docker-compose -f /app/docker-compose.yaml up -d
   become_user: "{{ docker_service_user }}"
