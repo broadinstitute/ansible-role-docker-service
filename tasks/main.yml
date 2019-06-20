@@ -21,10 +21,11 @@
     state: started
 
 - name: gcloud Docker auth configured
-  shell: gcloud auth configure-docker
+  shell: 
+    command: gcloud auth configure-docker
+    creates: "/home/{{ docker_service_user }}.docker/config.json"
   become: yes
   become_user: "{{ docker_service_user }}"
-  creates: "/home/{{ docker_service_user }}.docker/config.json"
 
 - name: Cron script exists
   template:
