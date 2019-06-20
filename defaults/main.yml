@@ -1,6 +1,7 @@
 ---
 docker_service_app_directory: /app
 docker_service_user: jenkins
+docker_service_health_timeout: "120"
 
 pip_version: "9.0.*"
 pip_get_pip_version: "latest"
