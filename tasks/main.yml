@@ -33,4 +33,4 @@
 - name: Set up cron job to monitor config
   cron:
     name: "check {{ instance_labels.app }} config"
-    job: 
+    job: "python3.6 /usr/local/bin/check_config.py"
