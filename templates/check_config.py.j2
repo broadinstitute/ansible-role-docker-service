@@ -16,7 +16,6 @@ logging.basicConfig(
 )
 
 def run_cmd(cmd):
-    logging.debug('Running command: %s' % cmd)
     result = subprocess.run(
         cmd,
         shell=True,
@@ -24,9 +23,10 @@ def run_cmd(cmd):
         stderr=subprocess.STDOUT
     )
     output = result.stdout.decode('utf-8')
-    logging.debug("Command output:\n%s" % output)
 
     if result.returncode != 0:
+        logging.error('Ran command: %s' % cmd)
+        logging.error("Command output:\n%s" % output)
         exit(1)
 
     return output
@@ -51,8 +51,6 @@ def config_changed():
     changed = len(changes) != 0
     if changed:
         logging.debug("Changes found:\n%s" % changes)
-    else:
-        logging.debug("No changes found")
     return changed
 
 
