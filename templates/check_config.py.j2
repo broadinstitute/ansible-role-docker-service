@@ -3,7 +3,6 @@ import re
 import logging
 
 import polling
-import requests
 
 owner = "{{ instance_labels.owner }}"
 app = "{{ instance_labels.app }}"
@@ -66,7 +65,12 @@ def update_service():
 def health_check(step=10, timeout=120):
     logging.debug("Polling for health for %i seconds" % timeout)
     polling.poll(
-        lambda: requests.get('https://localhost/status', verify=False).status_code == 200,
+        lambda: subprocess.run(
+                'curl -k -f https://localhost/status',
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT
+            ).returncode == 0,
         step=step,
         timeout=timeout
     )

@@ -6,7 +6,6 @@
     executable: /usr/local/bin/pip
     name:
       - docker-compose
-      - requests
       - polling
 
 - name: App directory exists
