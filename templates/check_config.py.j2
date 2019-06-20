@@ -61,7 +61,7 @@ def update_service():
 
 
 def health_check(step=10, timeout=120):
-    logging.debug("Polling for health for %i seconds" % timeout)
+    logging.debug("Polling for health for up to %i seconds" % timeout)
     polling.poll(
         lambda: subprocess.run(
                 'curl -k -f https://localhost/status',
@@ -72,7 +72,7 @@ def health_check(step=10, timeout=120):
         step=step,
         timeout=timeout
     )
-
+    logging.debug("Service is healthy.")
 
 if config_changed():
     update_service()
