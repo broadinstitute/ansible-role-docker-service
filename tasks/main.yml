@@ -21,8 +21,8 @@
     state: started
 
 - name: gcloud Docker auth configured
-  shell: 
-    command: gcloud auth configure-docker
+  shell: gcloud auth configure-docker
+  args:
     creates: "/home/{{ docker_service_user }}.docker/config.json"
   become: yes
   become_user: "{{ docker_service_user }}"
