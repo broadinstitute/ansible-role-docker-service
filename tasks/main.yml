@@ -22,7 +22,9 @@
 
 - name: gcloud Docker auth configured
   shell: gcloud auth configure-docker
+  become: yes
   become_user: "{{ docker_service_user }}"
+  creates: "/home/{{ docker_service_user }}.docker/config.json"
 
 - name: Cron script exists
   template:
@@ -35,10 +37,11 @@
   file:
     path: "/var/log/{{ instance_labels.app }}"
     state: directory
-    mode: '0755'  
+    mode: '0755'
     owner: "{{ docker_service_user }}"
 
 - name: Set up cron job to monitor config
   cron:
     name: "check {{ instance_labels.app }} config"
     job: "python3.6 /usr/local/bin/check_config.py >> /var/log/{{ instance_labels.app }}/{{ instance_labels.app }}_config.log 2>&1"
+    user: "{{ docker_service_user }}"
