@@ -1,8 +1,9 @@
 import subprocess
 import re
+import logging
+
 import polling
 import requests
-import logging
 
 owner = "{{ instance_labels.owner }}"
 app = "{{ instance_labels.app }}"
