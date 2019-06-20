@@ -12,7 +12,6 @@
     state: directory
     mode: '0755'
     owner: "{{ docker_service_user }}"
-  become_user: "{{ docker_service_user }}"
 
 - name: Docker deamon is running
   service:
@@ -30,7 +29,14 @@
     owner: "{{ docker_service_user }}"
     mode: '0755'
 
+- name: Cron job logging directory exists
+  file:
+    path: "/var/log/{{ instance_labels.app }}"
+    state: directory
+    mode: '0755'  
+    owner: "{{ docker_service_user }}"
+
 - name: Set up cron job to monitor config
   cron:
     name: "check {{ instance_labels.app }} config"
-    job: "python3.6 /usr/local/bin/check_config.py"
+    job: "python3.6 /usr/local/bin/check_config.py 2>&1 >> /var/log/{{ instance_labels.app }}/{{ instance_labels.app }}_config.log"
