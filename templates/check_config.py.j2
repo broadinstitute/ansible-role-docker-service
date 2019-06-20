@@ -1,0 +1,79 @@
+import subprocess
+import re
+import logging
+
+import polling
+
+owner = "{{ instance_labels.owner }}"
+app = "{{ instance_labels.app }}"
+hostname = "{{ ansible_hostname }}"
+app_dir = "{{ docker_service_app_directory }}"
+health_timeout = {{ docker_service_health_timeout }}
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s:%(message)s"
+)
+
+def run_cmd(cmd):
+    result = subprocess.run(
+        cmd,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT
+    )
+    output = result.stdout.decode('utf-8')
+
+    if result.returncode != 0:
+        logging.error('Ran command: %s' % cmd)
+        logging.error("Command output:\n%s" % output)
+        exit(1)
+
+    return output
+
+
+def rsync_config(dry_run=False):
+    rsync_options = '-r -d'
+    rsync_options += ' -n' if dry_run else ''
+    rsync_cmd = "gsutil rsync %s gs://%s-%s-config/%s/configs %s 2>&1" % (
+        rsync_options,
+        owner,
+        app,
+        hostname,
+        app_dir
+    )
+
+    return run_cmd(rsync_cmd)
+
+
+def config_changed():
+    changes = re.findall(r'^Would.+', rsync_config(dry_run=True), re.MULTILINE)
+    changed = len(changes) != 0
+    if changed:
+        logging.debug("Changes found:\n%s" % changes)
+    return changed
+
+
+def update_service():
+    logging.debug("Updating service")
+    rsync_config()
+    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml up -d' % app_dir)
+
+
+def health_check(step=10, timeout=120):
+    logging.debug("Polling for health for up to %i seconds" % timeout)
+    polling.poll(
+        lambda: subprocess.run(
+                'curl -k -f https://localhost/status',
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT
+            ).returncode == 0,
+        step=step,
+        timeout=timeout
+    )
+    logging.debug("Service is healthy.")
+
+if config_changed():
+    update_service()
+    health_check(timeout=health_timeout)

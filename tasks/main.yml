@@ -4,28 +4,45 @@
 
 - pip:
     executable: /usr/local/bin/pip
-    name: docker-compose
+    name:
+      - docker-compose
+      - polling
 
-- name: Create app directory if it does not exist
+- name: App directory exists
   file:
     path: "{{ docker_service_app_directory }}"
     state: directory
     mode: '0755'
-  become_user: "{{ docker_service_user }}"
+    owner: "{{ docker_service_user }}"
 
-- name: Download config files
-  shell: gsutil rsync -r gs://{{ instance_labels.owner }}-{{ instance_labels.app }}-config/{{ ansible_hostname }}/configs {{ docker_service_app_directory }}
-  become_user: "{{ docker_service_user }}"
-
-- name: Ensure docker deamon is running
+- name: Docker deamon is running
   service:
     name: docker
     state: started
 
-- name: Configure gcloud Docker auth
+- name: gcloud Docker auth configured
   shell: gcloud auth configure-docker
+  args:
+    creates: "/home/{{ docker_service_user }}/.docker/config.json"
+  become: yes
   become_user: "{{ docker_service_user }}"
 
-- name: Docker-compose
-  shell: /usr/local/bin/docker-compose -f /app/docker-compose.yaml up -d
-  become_user: "{{ docker_service_user }}"
+- name: Cron script exists
+  template:
+    src: check_config.py.j2
+    dest: /usr/local/bin/check_config.py
+    owner: "{{ docker_service_user }}"
+    mode: '0755'
+
+- name: Cron job logging directory exists
+  file:
+    path: "/var/log/{{ instance_labels.app }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ docker_service_user }}"
+
+- name: Config update cron job exists
+  cron:
+    name: "check {{ instance_labels.app }} config"
+    job: "python3.6 /usr/local/bin/check_config.py >> /var/log/{{ instance_labels.app }}/{{ instance_labels.app }}_config.log 2>&1"
+    user: "{{ docker_service_user }}"

@@ -2,6 +2,7 @@
 - name: Get label info
   shell: gcloud compute instances list --filter="name:$(hostname)" --format 'json(labels)' | jq .[].labels
   register: label_cmd
+  changed_when: False
 
 - name: Set labels as facts
   set_fact:
