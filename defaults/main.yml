@@ -1,6 +1,7 @@
 ---
 docker_service_app_directory: /app
 docker_service_user: jenkins
+docker_service_health_check: 'curl -k -f https://localhost/status'
 docker_service_health_timeout: "120"
 
 pip_version: "9.0.*"

@@ -8,6 +8,7 @@ owner = "{{ instance_labels.owner }}"
 app = "{{ instance_labels.app }}"
 hostname = "{{ ansible_hostname }}"
 app_dir = "{{ docker_service_app_directory }}"
+health_check_cmd = "{{ docker_service_health_check }}"
 health_timeout = {{ docker_service_health_timeout }}
 
 logging.basicConfig(
@@ -64,7 +65,7 @@ def health_check(step=10, timeout=120):
     logging.debug("Polling for health for up to %i seconds" % timeout)
     polling.poll(
         lambda: subprocess.run(
-                'curl -k -f https://localhost/status',
+                health_check_cmd,
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT
