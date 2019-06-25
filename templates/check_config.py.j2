@@ -49,7 +49,14 @@ def rsync_config(dry_run=False):
 
 def config_changed():
     changes = re.findall(r'^Would.+', rsync_config(dry_run=True), re.MULTILINE)
-    changed = len(changes) != 0
+    changed = (
+        len(changes) != 0 and
+        not (
+            len(changes) == 1 and
+            changes[0].split()[-1] == "file://%s/" % app_dir
+        )
+    )
+    print(changes[0].split()[-1])
     if changed:
         logging.debug("Changes found:\n%s" % changes)
     return changed
@@ -58,10 +65,10 @@ def config_changed():
 def update_service():
     logging.debug("Updating service")
     rsync_config()
-    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml up -d' % app_dir)
+    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml down && /usr/local/bin/docker-compose -f %s/docker-compose.yaml up -d' % (app_dir, app_dir))
 
 
-def health_check(step=10, timeout=120):
+def health_check(step=10, timeout=60):
     logging.debug("Polling for health for up to %i seconds" % timeout)
     polling.poll(
         lambda: subprocess.run(
