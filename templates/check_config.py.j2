@@ -51,6 +51,7 @@ def config_changed():
     changes = re.findall(r'^Would.+', rsync_config(dry_run=True), re.MULTILINE)
     changed = (
         len(changes) != 0 and
+        # gsutil dry-run sometimes shows the root app folder as a change when there really are no changes
         not (
             len(changes) == 1 and
             changes[0].split()[-1] == "file://%s/" % app_dir
