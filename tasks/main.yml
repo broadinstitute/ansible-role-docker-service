@@ -14,6 +14,7 @@
     state: directory
     mode: '0755'
     owner: "{{ docker_service_user }}"
+    group: "{{ docker_service_user }}"
 
 - name: Docker deamon is running
   service:
@@ -32,6 +33,7 @@
     src: check_config.py.j2
     dest: /usr/local/bin/check_config.py
     owner: "{{ docker_service_user }}"
+    group: "{{ docker_service_user }}"
     mode: '0755'
 
 - name: Cron job logging directory exists
@@ -44,5 +46,5 @@
 - name: Config update cron job exists
   cron:
     name: "check {{ instance_labels.app }} config"
-    job: "python3.6 /usr/local/bin/check_config.py >> /var/log/{{ instance_labels.app }}/{{ instance_labels.app }}_config.log 2>&1"
+    job: "python3.6 /usr/local/bin/check_config.py 2>&1 | /usr/bin/logger -t {{ instance_labels.app }}_config"
     user: "{{ docker_service_user }}"
