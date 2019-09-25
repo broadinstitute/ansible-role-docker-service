@@ -3,10 +3,14 @@
   include: label-vars.yml
 
 - pip:
-    executable: /usr/local/bin/pip
+    virtualenv_python: python3.6
+    virtualenv: "/home/{{ docker_service_user }}/.virtualenvs/config"
+    virtualenv_site_packages: yes
     name:
       - docker-compose
       - polling
+  become: yes
+  become_user: "{{ docker_service_user }}"
 
 - name: App directory exists
   file:
@@ -46,5 +50,5 @@
 - name: Config update cron job exists
   cron:
     name: "check {{ instance_labels.app }} config"
-    job: "python3.6 /usr/local/bin/check_config.py 2>&1 | /usr/bin/logger -t {{ instance_labels.app }}_config"
+    job: "/home/{{ docker_service_user }}/.virtualenvs/config/bin/python3 /usr/local/bin/check_config.py 2>&1 | /usr/bin/logger -t {{ instance_labels.app }}_config"
     user: "{{ docker_service_user }}"
