@@ -2,8 +2,10 @@
 - name: Expose instance labels as instance_labels var
   include: label-vars.yml
 
-- pip:
+- name: Setup config virtualenv
+  pip:
     virtualenv_python: python3.6
+    virtualenv_command: /usr/local/bin/virtualenv
     virtualenv: "/home/{{ docker_service_user }}/.virtualenvs/config"
     virtualenv_site_packages: yes
     name:
