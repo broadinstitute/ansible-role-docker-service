@@ -1,6 +1,7 @@
 import subprocess
 import re
 import logging
+import time
 
 import polling
 
@@ -65,6 +66,7 @@ def config_changed():
 def update_service():
     logging.debug("Updating service")
     rsync_config()
+    time.sleep( 5 )
     run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml down && /usr/local/bin/docker-compose -f %s/docker-compose.yaml up -d' % (app_dir, app_dir))
 
 
