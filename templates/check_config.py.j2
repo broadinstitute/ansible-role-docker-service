@@ -62,13 +62,17 @@ def config_changed():
         logging.debug("Changes found:\n%s" % changes)
     return changed
 
+def docker_compose_down():
+    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml down' % app_dir)
+
+def docker_compose_up():
+    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml up -d' % app_dir)
 
 def update_service():
     logging.debug("Updating service")
+    docker_compose_down()
     rsync_config()
-    time.sleep( 5 )
-    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml down && /usr/local/bin/docker-compose -f %s/docker-compose.yaml up -d' % (app_dir, app_dir))
-
+    docker_compose_up()
 
 def health_check(step=10, timeout=60):
     logging.debug("Polling for health for up to %i seconds" % timeout)
