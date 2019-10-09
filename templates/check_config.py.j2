@@ -48,10 +48,10 @@ def config_changed():
     return changed
 
 def docker_compose_down():
-    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml down' % app_dir)
+    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml down || true' % app_dir)
 
 def wipe_app_dir():
-    run_cmd('rm -rf %s' % app_dir)
+    run_cmd('rm -rf %s/*' % app_dir)
 
 def rsync_config(dry_run=False):
     rsync_options = '-r -d'
