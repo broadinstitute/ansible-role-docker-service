@@ -67,6 +67,7 @@ def rsync_config(dry_run=False):
     return run_cmd(rsync_cmd)
 
 def docker_compose_up():
+    run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml pull' % app_dir)
     run_cmd('/usr/local/bin/docker-compose -f %s/docker-compose.yaml up -d' % app_dir)
 
 def update_service():
